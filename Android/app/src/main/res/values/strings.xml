@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Taskout</string>
+    <string name="hello">Hello!</string>
+    <string name="username">Username</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="sign_up">Sign Up</string>
 </resources>

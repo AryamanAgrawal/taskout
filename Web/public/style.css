@@ -2,8 +2,9 @@ html, body{
     width: 100%;
     height: 100%;
     overflow: hidden;
-    background-color: #B3E5FC;
+    background-image: linear-gradient(#FFEB3B, #F57F17);
 }
+/*#B3E5FC*/
 
 @font-face{
     font-family: ProductSans;
@@ -38,13 +39,15 @@ td{
     margin-top: 10px;
     width: 100%;
     text-align: center;
-    font-size: 40px;
-    color: #1E265C;
+    font-size: 36px;
+    color: #fff;
 }
 
+/*#1E265C*/
+
 .caption{
-    margin-top: 20px;
-    color: #333;
+    margin-top: 5px;
+    color: #fff;
 }
 
 .subscribeform{
@@ -60,22 +63,23 @@ td{
     padding-left: 10px;
     padding-right: 10px;
     font-size: 16px;
-    line-height: 30px;
+    line-height: 40px;
     border-radius: 10px 0 0 10px;
 }
 
 .subscribebutton{
-    margin: -5px;
     border: none;
+    margin-left: -5px;
     height: 42px;
+    line-height: 40px;
     border-radius: 0 10px 10px 0;
     padding-left: 30px;
     color: #fff;
     font-size: 16px;
-    background-color: #1e265C;
+    background-color: #000;
     padding-right: 30px;
 }
-
+/*#1e265C*/
 input:focus,
 select:focus,
 textarea:focus,

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import '../../taskout_model.dart';
 
 class UsernameTextField extends StatelessWidget {
+  final TaskoutModel taskoutModel;
+  UsernameTextField(this.taskoutModel);
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -12,13 +15,9 @@ class UsernameTextField extends StatelessWidget {
         elevation: 5.0,
         borderRadius: BorderRadius.circular(30.0),
         shadowColor: Color(0xffC7D0F8),
-        child: TextFormField(
-          validator: (String value) {
-            if (value.isEmpty) {
-              return "Please provide an email";
-            } else if (value.split(" ").length > 1) {
-              return "Username should be one word";
-            }
+        child: TextField(
+          onChanged: (String value){
+            taskoutModel.username = value;
           },
           cursorColor: Colors.blue.shade900,
           decoration: InputDecoration(

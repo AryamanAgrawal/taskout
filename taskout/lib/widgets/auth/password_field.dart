@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import '../../taskout_model.dart';
 
 class PasswordTextField extends StatelessWidget {
+  final TaskoutModel taskoutModel;
+  PasswordTextField(this.taskoutModel);
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -12,13 +16,9 @@ class PasswordTextField extends StatelessWidget {
         elevation: 5.0,
         borderRadius: BorderRadius.circular(30.0),
         shadowColor: Color(0xffC7D0F8),
-        child: TextFormField(
-          validator: (String value) {
-            if (value.isEmpty) {
-              return "Please enter a password";
-            } else if (value.length < 6) {
-              return "Needs to be 6 characters or more";
-            }
+        child: TextField(
+          onChanged: (String value){
+            taskoutModel.password = value;
           },
           obscureText: true,
           cursorColor: Colors.blue.shade900,

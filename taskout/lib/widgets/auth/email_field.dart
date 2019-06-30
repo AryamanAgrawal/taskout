@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import '../../taskout_model.dart';
 
 class EmailTextField extends StatelessWidget {
+  final TaskoutModel taskoutModel;
+  EmailTextField(this.taskoutModel);
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -12,15 +16,9 @@ class EmailTextField extends StatelessWidget {
         elevation: 5.0,
         borderRadius: BorderRadius.circular(30.0),
         shadowColor: Color(0xffC7D0F8),
-        child: TextFormField(
-          validator: (String value) {
-            if (value.isEmpty) {
-              return "Please provide an email";
-            } else if (!RegExp(
-                    r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
-                .hasMatch(value)) {
-              return "Invalid email";
-            }
+        child: TextField(
+          onChanged: (String value){
+            taskoutModel.email = value;
           },
           keyboardType: TextInputType.emailAddress,
           cursorColor: Colors.blue.shade900,

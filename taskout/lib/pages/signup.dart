@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import '../taskout_model.dart';
+import '../pages/something.dart';
 
 //custom widgets
 import '../widgets/text/app_heading.dart';
@@ -13,7 +14,25 @@ import '../widgets/auth/password_field.dart';
 import '../widgets/auth/confirm_auth_button.dart';
 
 class SignUp extends StatelessWidget {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  void _buildErrorDisplayingDialog(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Sign Up"),
+          content: Text(message),
+          actions: <Widget>[
+            FlatButton(
+              child: Text("DISMISS"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            )
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,26 +44,51 @@ class SignUp extends StatelessWidget {
           BackgroundContainer(),
           Align(
             alignment: FractionalOffset.center,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                SizedBox(
-                  height: 30.0,
-                ),
-                AppHeading(),
-                UsernameTextField(),
-                EmailTextField(),
-                PasswordTextField(),
-                ScopedModelDescendant<TaskoutModel>(
-                  builder:
-                      (BuildContext context, Widget child, TaskoutModel model) {
-                    return ConfirmAuthButton("Sign Up", () {
+            child: ScopedModelDescendant<TaskoutModel>(
+              builder:
+                  (BuildContext context, Widget child, TaskoutModel model) {
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    SizedBox(
+                      height: 30.0,
+                    ),
+                    AppHeading(),
+                    UsernameTextField(model),
+                    EmailTextField(model),
+                    PasswordTextField(model),
+                    ConfirmAuthButton("Sign Up", () {
                       model.signUp = true;
-                      _formKey.currentState.validate();
-                    });
-                  },
-                )
-              ],
+                      String username = model.getUsername;
+                      String email = model.getEmail;
+                      String password = model.getPassword;
+                      if (username.length < 4 ||
+                          username.split(" ").length != 1) {
+                        _buildErrorDisplayingDialog(context,
+                            "Username should be one word and 5 characters or more");
+                      } else if (!RegExp(
+                              r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
+                          .hasMatch(email)) {
+                        _buildErrorDisplayingDialog(context, "Invalid Email");
+                      } else if (password.length < 6) {
+                        _buildErrorDisplayingDialog(
+                            context, "Password should be 6 characters or more");
+                      } else {
+                        model.signUpUser().then((String message) {
+                          if (message == null || message.length < 1) {
+                            Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        Something()));
+                          } else {
+                            _buildErrorDisplayingDialog(context, message);
+                          }
+                        });
+                      }
+                    })
+                  ],
+                );
+              },
             ),
           ),
           Align(

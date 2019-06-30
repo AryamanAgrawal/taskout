@@ -1,31 +1,27 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+import 'package:scoped_model/scoped_model.dart';
+import '../../taskout_model.dart';
+import '../../pages/something.dart';
 
 class GoogleSignInButton extends StatelessWidget {
-  final FirebaseAuth _fAuth = FirebaseAuth.instance;
-  final GoogleSignIn _gSignIn = new GoogleSignIn();
-
-  Future<dynamic> _signIn(BuildContext context) async {
-    SnackBar snackBar = SnackBar(
-      content: Text("Yay a snackbar"),
+  void _buildErrorDisplayingDialog(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Log In"),
+          content: Text(message),
+          actions: <Widget>[
+            FlatButton(
+              child: Text("DISMISS"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            )
+          ],
+        );
+      },
     );
-    Scaffold.of(context).showSnackBar(snackBar);
-    GoogleSignInAccount googleSignInAccount = await _gSignIn.signIn();
-    if (googleSignInAccount == null) {
-      return false;
-    } else {
-      GoogleSignInAuthentication googleSignInAuthentication =
-          await googleSignInAccount.authentication;
-      final AuthCredential credential = GoogleAuthProvider.getCredential(
-        accessToken: googleSignInAuthentication.accessToken,
-        idToken: googleSignInAuthentication.idToken,
-      );
-      final FirebaseUser user = await _fAuth.signInWithCredential(credential);
-      print("signed in " + user.displayName);
-      return user;
-    }
   }
 
   @override
@@ -34,30 +30,42 @@ class GoogleSignInButton extends StatelessWidget {
       elevation: 0.5,
       borderRadius: BorderRadius.circular(30.0),
       child: Container(
-        child: FlatButton(
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Image(
-                image: AssetImage("assets/icons/google.png"),
+        child: ScopedModelDescendant<TaskoutModel>(
+          builder: (BuildContext context, Widget child, TaskoutModel model) {
+            return FlatButton(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Image(
+                    image: AssetImage("assets/icons/google.png"),
+                  ),
+                  SizedBox(
+                    width: 10.0,
+                  ),
+                  Text(
+                    "PROCEED WITH GOOGLE",
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 12.0,
+                    ),
+                  ),
+                  SizedBox(
+                    width: 10.0,
+                  ),
+                ],
               ),
-              SizedBox(
-                width: 10.0,
-              ),
-              Text(
-                "PROCEED WITH GOOGLE",
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 12.0,
-                ),
-              ),
-              SizedBox(
-                width: 10.0,
-              ),
-            ],
-          ),
-          onPressed: () {
-            _signIn(context);
+              onPressed: () {
+                model.signInWithGoogle().then((bool value) {
+                  if (value) {
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(
+                        builder: (BuildContext context) => Something()));
+                  } else {
+                    _buildErrorDisplayingDialog(
+                        context, "Could not continue with Google. Try Again.");
+                  }
+                });
+              },
+            );
           },
         ),
         decoration: BoxDecoration(

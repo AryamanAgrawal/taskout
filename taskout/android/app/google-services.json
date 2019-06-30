@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "103491137544",
+    "firebase_url": "https://taskout-a27f3.firebaseio.com",
+    "project_id": "taskout-a27f3",
+    "storage_bucket": "taskout-a27f3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:103491137544:android:3e7c643d01e28f85",
+        "android_client_info": {
+          "package_name": "com.practikality.taskout"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "103491137544-s016j9hietki0r2b48uskqhlihbbs7vs.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.practikality.taskout",
+            "certificate_hash": "74031f0ee4530498a125f0e45ee7cb43fc9c6453"
+          }
+        },
+        {
+          "client_id": "103491137544-06c49bl1mlt601pblojbhgnjjhok72p0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAQCR-g8i6Ju844pzHC6POz-tAniXM2bSQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "103491137544-1t2pul2nuqlorcr7vrkk1bhod3fi2ii5.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "103491137544-q56gq3g4gu1pj7gt5c4rq2t0r2f6hb28.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.practikality.taskout"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

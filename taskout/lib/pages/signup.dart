@@ -58,19 +58,21 @@ class SignUp extends StatelessWidget {
                     EmailTextField(model),
                     PasswordTextField(model),
                     ConfirmAuthButton("Sign Up", () {
-                      model.signUp = true;
                       String username = model.getUsername;
                       String email = model.getEmail;
                       String password = model.getPassword;
                       if (username.length < 4 ||
                           username.split(" ").length != 1) {
+                        model.turnOffLoading();
                         _buildErrorDisplayingDialog(context,
                             "Username should be one word and 5 characters or more");
                       } else if (!RegExp(
                               r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
                           .hasMatch(email)) {
+                        model.turnOffLoading();
                         _buildErrorDisplayingDialog(context, "Invalid Email");
                       } else if (password.length < 6) {
+                        model.turnOffLoading();
                         _buildErrorDisplayingDialog(
                             context, "Password should be 6 characters or more");
                       } else {
@@ -102,6 +104,100 @@ class SignUp extends StatelessWidget {
 }
 
 class BottomButtons extends StatelessWidget {
+  void _buildErrorDisplayingDialog(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Sign Up"),
+          content: Text(message),
+          actions: <Widget>[
+            FlatButton(
+              child: Text("DISMISS"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            )
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildGoogleSignUpButton() {
+    return Material(
+      elevation: 0.5,
+      borderRadius: BorderRadius.circular(30.0),
+      child: Container(
+        child: ScopedModelDescendant<TaskoutModel>(
+          builder: (BuildContext context, Widget child, TaskoutModel model) {
+            return FlatButton(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Image(
+                    image: AssetImage("assets/icons/google.png"),
+                  ),
+                  SizedBox(
+                    width: 10.0,
+                  ),
+                  Text(
+                    "PROCEED WITH GOOGLE",
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 12.0,
+                    ),
+                  ),
+                  SizedBox(
+                    width: 10.0,
+                  ),
+                ],
+              ),
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text("Choose a username"),
+                      content: UsernameTextField(model, shouldHavePadding: true,),
+                      actions: <Widget>[
+                        FlatButton(
+                          child: Text("PROCEED"),
+                          onPressed: () {
+                            model.signUpWithGoogle = true;
+                            model.signInWithGoogle().then((String message) {
+                              print("padamchopra: " + message);
+                              if (message == null || message.length == 0) {
+                                Navigator.of(context).pushReplacement(
+                                    MaterialPageRoute(
+                                        builder: (BuildContext context) =>
+                                            Something()));
+                              } else {
+                                _buildErrorDisplayingDialog(context, message);
+                              }
+                            });
+                          },
+                        )
+                      ],
+                    );
+                  },
+                );
+              },
+            );
+          },
+        ),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(30.0),
+          border: Border.all(
+            color: Colors.black12,
+            width: 0.5,
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -113,7 +209,7 @@ class BottomButtons extends StatelessWidget {
           SizedBox(
             height: 5.0,
           ),
-          GoogleSignInButton(),
+          _buildGoogleSignUpButton(),
           SizedBox(
             height: 30.0,
           ),

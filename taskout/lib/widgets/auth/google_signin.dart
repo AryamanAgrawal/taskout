@@ -24,6 +24,23 @@ class GoogleSignInButton extends StatelessWidget {
     );
   }
 
+  void _onLoading(BuildContext context) {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return new Dialog(
+            child: new Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                new CircularProgressIndicator(),
+                new Text("Loading"),
+              ],
+            ),
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -55,13 +72,13 @@ class GoogleSignInButton extends StatelessWidget {
                 ],
               ),
               onPressed: () {
-                model.signInWithGoogle().then((bool value) {
-                  if (value) {
+                model.signInWithGoogle().then((String message) {
+                  print("padamchopra: " + message);
+                  if (message == null || message.length == 0) {
                     Navigator.of(context).pushReplacement(MaterialPageRoute(
                         builder: (BuildContext context) => Something()));
                   } else {
-                    _buildErrorDisplayingDialog(
-                        context, "Could not continue with Google. Try Again.");
+                    _buildErrorDisplayingDialog(context, message);
                   }
                 });
               },

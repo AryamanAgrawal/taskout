@@ -22,10 +22,12 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     _fAuth.currentUser().then((FirebaseUser currentUser) {
-      model.user = currentUser;
-      setState(() {
-        isLoggedIn = true;
-      });
+      if (currentUser != null) {
+        model.user = currentUser;
+        setState(() {
+          isLoggedIn = true;
+        });
+      }
     });
   }
 

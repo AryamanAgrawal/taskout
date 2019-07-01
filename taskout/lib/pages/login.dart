@@ -7,7 +7,7 @@ import '../widgets/text/app_heading.dart';
 import '../widgets/text/caption_text.dart';
 import '../widgets/auth/background_container.dart';
 import '../widgets/auth/google_signin.dart';
-import '../widgets/auth/username_field.dart';
+import '../widgets/auth/email_field.dart';
 import '../widgets/auth/password_field.dart';
 import '../widgets/auth/confirm_auth_button.dart';
 import './signup.dart';
@@ -32,7 +32,7 @@ class LogIn extends StatelessWidget {
       },
     );
   }
-
+  
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -49,30 +49,32 @@ class LogIn extends StatelessWidget {
                     height: 30.0,
                   ),
                   AppHeading(),
-                  UsernameTextField(model),
+                  EmailTextField(model),
                   PasswordTextField(model),
                   ConfirmAuthButton("Log In", () {
-                    model.signUp = false;
-                    String username = model.getUsername;
+                    String email = model.getEmail;
                     String password = model.getPassword;
-                    if (username.length < 4 ||
-                        username.split(" ").length != 1) {
+                    if (!RegExp(
+                            r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
+                        .hasMatch(email)) {
+                      model.turnOffLoading();
                       _buildErrorDisplayingDialog(context,
                           "Username should be one word and 5 characters or more");
                     } else if (password.length < 6) {
+                      model.turnOffLoading();
                       _buildErrorDisplayingDialog(
                           context, "Password should be 6 characters or more");
                     } else {
                       model.logInUser().then((String message) {
-                          if (message == null || message.length < 1) {
-                            Navigator.of(context).pushReplacement(
-                                MaterialPageRoute(
-                                    builder: (BuildContext context) =>
-                                        Something()));
-                          } else {
-                            _buildErrorDisplayingDialog(context, message);
-                          }
-                        });
+                        if (message == null || message.length < 1) {
+                          Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      Something()));
+                        } else {
+                          _buildErrorDisplayingDialog(context, message);
+                        }
+                      });
                     }
                   })
                 ],

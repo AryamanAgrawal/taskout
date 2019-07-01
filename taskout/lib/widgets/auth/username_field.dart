@@ -3,12 +3,13 @@ import '../../taskout_model.dart';
 
 class UsernameTextField extends StatelessWidget {
   final TaskoutModel taskoutModel;
-  UsernameTextField(this.taskoutModel);
+  final bool shouldHavePadding;
+  UsernameTextField(this.taskoutModel, {this.shouldHavePadding});
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(
-        horizontal: 35.0,
+        horizontal: shouldHavePadding==null ? 35.0 : 5.0,
         vertical: 8.0,
       ),
       child: Material(

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import '../taskout_model.dart';
-import '../pages/something.dart';
+import '../pages/home.dart';
 //custom widgets
 import '../widgets/text/app_heading.dart';
 import '../widgets/text/caption_text.dart';
@@ -70,7 +70,7 @@ class LogIn extends StatelessWidget {
                           Navigator.of(context).pushReplacement(
                               MaterialPageRoute(
                                   builder: (BuildContext context) =>
-                                      Something()));
+                                      Home()));
                         } else {
                           _buildErrorDisplayingDialog(context, message);
                         }

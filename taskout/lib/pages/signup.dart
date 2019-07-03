@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import '../taskout_model.dart';
-import '../pages/something.dart';
+import '../pages/home.dart';
 
 //custom widgets
 import '../widgets/text/app_heading.dart';
 import '../widgets/text/caption_text.dart';
 import '../widgets/auth/background_container.dart';
-import '../widgets/auth/google_signin.dart';
 import '../widgets/auth/username_field.dart';
 import '../widgets/auth/email_field.dart';
 import '../widgets/auth/password_field.dart';
@@ -80,8 +79,7 @@ class SignUp extends StatelessWidget {
                           if (message == null || message.length < 1) {
                             Navigator.of(context).pushReplacement(
                                 MaterialPageRoute(
-                                    builder: (BuildContext context) =>
-                                        Something()));
+                                    builder: (BuildContext context) => Home()));
                           } else {
                             _buildErrorDisplayingDialog(context, message);
                           }
@@ -159,7 +157,10 @@ class BottomButtons extends StatelessWidget {
                   builder: (BuildContext context) {
                     return AlertDialog(
                       title: Text("Choose a username"),
-                      content: UsernameTextField(model, shouldHavePadding: true,),
+                      content: UsernameTextField(
+                        model,
+                        shouldHavePadding: true,
+                      ),
                       actions: <Widget>[
                         FlatButton(
                           child: Text("PROCEED"),
@@ -171,7 +172,7 @@ class BottomButtons extends StatelessWidget {
                                 Navigator.of(context).pushReplacement(
                                     MaterialPageRoute(
                                         builder: (BuildContext context) =>
-                                            Something()));
+                                            Home()));
                               } else {
                                 _buildErrorDisplayingDialog(context, message);
                               }

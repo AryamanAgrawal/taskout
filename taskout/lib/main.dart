@@ -3,7 +3,7 @@ import './pages/login.dart';
 import 'package:scoped_model/scoped_model.dart';
 import './taskout_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import './pages/something.dart';
+import './pages/home.dart';
 
 void main() => runApp(MyApp());
 
@@ -42,7 +42,7 @@ class _MyAppState extends State<MyApp> {
         home: Scaffold(
           resizeToAvoidBottomPadding: false,
           backgroundColor: Color(0xfffafafa),
-          body: isLoggedIn ? Something() : LogIn(),
+          body: isLoggedIn ? Home() : LogIn(),
         ),
       ),
     );

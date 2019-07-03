@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import '../../taskout_model.dart';
-import '../../pages/something.dart';
+import '../../pages/home.dart';
 
 class GoogleSignInButton extends StatelessWidget {
   void _buildErrorDisplayingDialog(BuildContext context, String message) {
@@ -76,7 +76,7 @@ class GoogleSignInButton extends StatelessWidget {
                   print("padamchopra: " + message);
                   if (message == null || message.length == 0) {
                     Navigator.of(context).pushReplacement(MaterialPageRoute(
-                        builder: (BuildContext context) => Something()));
+                        builder: (BuildContext context) => Home()));
                   } else {
                     _buildErrorDisplayingDialog(context, message);
                   }

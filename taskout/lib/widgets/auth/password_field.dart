@@ -17,6 +17,7 @@ class PasswordTextField extends StatelessWidget {
         borderRadius: BorderRadius.circular(30.0),
         shadowColor: Color(0xffC7D0F8),
         child: TextField(
+          autocorrect: false,
           onChanged: (String value){
             taskoutModel.password = value;
           },

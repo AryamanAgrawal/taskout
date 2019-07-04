@@ -38,6 +38,10 @@ class _MyAppState extends State<MyApp> {
       child: MaterialApp(
         theme: ThemeData(
           fontFamily: "productsans",
+          primaryColor: Colors.black,
+          accentColor: Colors.black,
+          highlightColor: Colors.black,
+          cursorColor: Colors.black,
         ),
         home: Scaffold(
           resizeToAvoidBottomPadding: false,

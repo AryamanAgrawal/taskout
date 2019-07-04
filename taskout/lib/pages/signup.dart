@@ -4,7 +4,7 @@ import '../taskout_model.dart';
 import '../pages/home.dart';
 
 //custom widgets
-import '../widgets/text/app_heading.dart';
+import '../widgets/text/heading.dart';
 import '../widgets/text/caption_text.dart';
 import '../widgets/auth/background_container.dart';
 import '../widgets/auth/username_field.dart';
@@ -52,7 +52,7 @@ class SignUp extends StatelessWidget {
                     SizedBox(
                       height: 30.0,
                     ),
-                    AppHeading(),
+                    Heading("taskout",Color(0xff4A69FF)),
                     UsernameTextField(model),
                     EmailTextField(model),
                     PasswordTextField(model),

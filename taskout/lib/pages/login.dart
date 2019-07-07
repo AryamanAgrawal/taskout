@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import '../taskout_model.dart';
-import '../pages/home.dart';
+import './pages_manager.dart';
 //custom widgets
+import '../widgets/general/custom_alert_dialog.dart';
 import '../widgets/text/heading.dart';
 import '../widgets/text/caption_text.dart';
 import '../widgets/auth/background_container.dart';
@@ -13,26 +14,6 @@ import '../widgets/auth/confirm_auth_button.dart';
 import './signup.dart';
 
 class LogIn extends StatelessWidget {
-  void _buildErrorDisplayingDialog(BuildContext context, String message) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Log In"),
-          content: Text(message),
-          actions: <Widget>[
-            FlatButton(
-              child: Text("DISMISS"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            )
-          ],
-        );
-      },
-    );
-  }
-  
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -57,22 +38,18 @@ class LogIn extends StatelessWidget {
                     if (!RegExp(
                             r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
                         .hasMatch(email)) {
-                      model.turnOffLoading();
-                      _buildErrorDisplayingDialog(context,
-                          "Username should be one word and 5 characters or more");
+                      CustomAlertDialog().buildCustomAlertDialog(context, "Login", "Invalid Email");
                     } else if (password.length < 6) {
-                      model.turnOffLoading();
-                      _buildErrorDisplayingDialog(
-                          context, "Password should be 6 characters or more");
+                      CustomAlertDialog().buildCustomAlertDialog(context, "Login", "Password should be 6 characters or more");
                     } else {
                       model.logInUser().then((String message) {
                         if (message == null || message.length < 1) {
                           Navigator.of(context).pushReplacement(
                               MaterialPageRoute(
                                   builder: (BuildContext context) =>
-                                      Home()));
+                                      PagesManager()));
                         } else {
-                          _buildErrorDisplayingDialog(context, message);
+                          CustomAlertDialog().buildCustomAlertDialog(context, "Login", message);
                         }
                       });
                     }

@@ -51,6 +51,7 @@ class ConfirmAuthButton extends StatelessWidget {
             gradient: LinearGradient(
               begin: FractionalOffset.centerLeft,
               end: FractionalOffset.centerRight,
+              //TODO: Pick Colors
               colors: <Color>[Color(0xff4A69FF), Color(0xff4AD284)],
             ),
           ),

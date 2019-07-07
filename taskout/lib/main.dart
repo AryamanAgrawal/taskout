@@ -3,7 +3,7 @@ import './pages/login.dart';
 import 'package:scoped_model/scoped_model.dart';
 import './taskout_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import './pages/home.dart';
+import './pages/pages_manager.dart';
 
 void main() => runApp(MyApp());
 
@@ -17,6 +17,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   FirebaseAuth _fAuth = FirebaseAuth.instance;
   bool isLoggedIn = false;
+  bool checkComplete = false;
   TaskoutModel model = TaskoutModel();
   @override
   void initState() {
@@ -24,11 +25,34 @@ class _MyAppState extends State<MyApp> {
     _fAuth.currentUser().then((FirebaseUser currentUser) {
       if (currentUser != null) {
         model.user = currentUser;
+        model.setSignedInUserDetails().then((String value) {
+          if (value == "") {
+            setState(() {
+              checkComplete = true;
+              isLoggedIn = true;
+            });
+          }
+        });
+      }else{
         setState(() {
-          isLoggedIn = true;
+          checkComplete = true;
         });
       }
     });
+  }
+
+  Widget _whatToDisplay() {
+    if (checkComplete) {
+      if (isLoggedIn) {
+        return PagesManager();
+      } else {
+        return LogIn();
+      }
+    } else {
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    }
   }
 
   @override
@@ -46,7 +70,7 @@ class _MyAppState extends State<MyApp> {
         home: Scaffold(
           resizeToAvoidBottomPadding: false,
           backgroundColor: Color(0xfffafafa),
-          body: isLoggedIn ? Home() : LogIn(),
+          body: _whatToDisplay(),
         ),
       ),
     );

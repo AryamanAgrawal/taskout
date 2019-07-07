@@ -1,29 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import '../../taskout_model.dart';
-import '../../pages/home.dart';
+import '../../pages/pages_manager.dart';
+import '../general/custom_alert_dialog.dart';
 
 class GoogleSignInButton extends StatelessWidget {
-  void _buildErrorDisplayingDialog(BuildContext context, String message) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Log In"),
-          content: Text(message),
-          actions: <Widget>[
-            FlatButton(
-              child: Text("DISMISS"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            )
-          ],
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -59,9 +40,9 @@ class GoogleSignInButton extends StatelessWidget {
                   print("padamchopra: " + message);
                   if (message == null || message.length == 0) {
                     Navigator.of(context).pushReplacement(MaterialPageRoute(
-                        builder: (BuildContext context) => Home()));
+                        builder: (BuildContext context) => PagesManager()));
                   } else {
-                    _buildErrorDisplayingDialog(context, message);
+                    CustomAlertDialog().buildCustomAlertDialog(context, "Google Sign-In", message);
                   }
                 });
               },

@@ -9,7 +9,7 @@ class CaptionText extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       text,
-      textAlign: TextAlign.end,
+      textAlign: textAlign,
       style: TextStyle(fontSize: 12.0, color: color),
     );
   }

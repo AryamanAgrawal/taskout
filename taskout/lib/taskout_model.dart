@@ -150,6 +150,12 @@ class TaskoutModel extends Model {
   Future<String> addNewTask(CustomTask task) async {
     try {
       Map<String, dynamic> dataToPut = task.taskData;
+      List<Map<String, dynamic>> updates = [{
+        "status": "Requested",
+        "time": dataToPut["created"],
+        "color": "grey"
+      }];
+      dataToPut["updates"] = updates;
       if (!RegExp(
               r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
           .hasMatch(dataToPut["to"])) {

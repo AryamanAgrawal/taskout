@@ -111,7 +111,6 @@ class _AddTaskState extends State<AddTask> {
               ? priorityButtons.taskPriority
               : null,
           created: DateTime.now(),
-          status: "new",
         );
         widget._taskoutModel.addNewTask(task).then((String value) {
           if (value == "added") {

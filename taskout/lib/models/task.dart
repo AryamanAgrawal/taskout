@@ -10,9 +10,9 @@ class CustomTask {
   TimeOfDay time;
   int priority;
   DateTime created;
-  String status;
+  List<Map<String, dynamic>> updates;
 
-  CustomTask(this.from, this.to,this.title,this.description,{this.tags,this.date,this.time,this.priority, this.created, this.status});
+  CustomTask(this.from, this.to,this.title,this.description,{this.tags,this.date,this.time,this.priority, this.created, this.updates});
 
   String _formatDate(DateTime toFormat) {
     String day = toFormat.day.toString();
@@ -61,8 +61,8 @@ class CustomTask {
     if(created != null){
       data["created"] = created.millisecondsSinceEpoch;
     }
-    if(status != null){
-      data["status"] = status;
+    if(updates != null){
+      data["updates"] = updates;
     }
     return data;
   }

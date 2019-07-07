@@ -10,19 +10,16 @@ class TaskoutModel extends Model {
   String username;
   String email;
   String password;
-  bool signUpWithGoogle = false;
   FirebaseUser user;
   FirebaseAuth _fAuth = FirebaseAuth.instance;
-  GoogleSignIn _gSignIn = new GoogleSignIn();
-  Map<String, dynamic> signedInUserDetails;
+  Map<String, dynamic> signedInUserDetailsMap;
   Firestore _firestore = Firestore.instance;
-  String signedInUsername;
   Function toggleNewTaskThroughModel;
-
+  Function toggleTaskAlertThroughModel;
 
   //STARTS: Handling username filling for adding task through favorite
   String _usernameForTask;
-  
+
   String get usernameForTask {
     return _usernameForTask;
   }
@@ -32,27 +29,24 @@ class TaskoutModel extends Model {
   }
   //ENDS: Handling username filling for adding task through favorite
 
-  String get getUsername {
-    return username;
+  //STARTS: Getting signed in user's details
+  Future<String> setSignedInUserDetails() async {
+    try {
+      DocumentSnapshot ds =
+          await _firestore.collection("users").document(user.uid).get();
+      signedInUserDetailsMap = ds.data;
+      return "";
+    } on PlatformException catch (e) {
+      print(e.message);
+      return "Could not load your data. Try Again.";
+    }
   }
+  //STOPS: Getting signed in user's details
 
-  String get getEmail {
-    return email;
-  }
+  //STARTS: Google Sign Up and Logging in
+  bool signUpWithGoogle = false;
+  GoogleSignIn _gSignIn = new GoogleSignIn();
 
-  String get getPassword {
-    return password;
-  }
-
-  String get getUserId {
-    return user.uid;
-  }
-
-  Map<String, dynamic> get signedInUserDetailsMap {
-    return signedInUserDetails;
-  }
-
-  //Google Sign Up
   Future<String> signInWithGoogle() async {
     GoogleSignInAccount googleSignInAccount = await _gSignIn.signIn();
     if (googleSignInAccount == null) {
@@ -65,12 +59,15 @@ class TaskoutModel extends Model {
         idToken: googleSignInAuthentication.idToken,
       );
       user = await _fAuth.signInWithCredential(credential);
+      //Check if records already exist
       DocumentSnapshot ds =
           await _firestore.collection("users").document(user.uid).get();
       if (ds.exists) {
+        //User exists so sign in and fetch details
         String userDetailsSet = await setSignedInUserDetails();
         return userDetailsSet;
       } else {
+        //User does not already exist. Check if they are signing up or trying to log in
         if (signUpWithGoogle) {
           signUpWithGoogle = false;
           Map<String, dynamic> userData = {
@@ -78,7 +75,7 @@ class TaskoutModel extends Model {
             "email": user.email,
             "uid": user.uid
           };
-          signedInUserDetails = userData;
+          signedInUserDetailsMap = userData;
           try {
             _firestore.collection("users").document(user.uid).setData(userData);
             return "";
@@ -95,8 +92,9 @@ class TaskoutModel extends Model {
       }
     }
   }
+  //STOPS: Google Sign Up and Logging in
 
-  //Sign Up new users
+  //STARTS: Sign Up new users
   Future<String> signUpUser() async {
     try {
       user = await _fAuth.createUserWithEmailAndPassword(
@@ -114,15 +112,17 @@ class TaskoutModel extends Model {
           "uid": user.uid
         };
         _firestore.collection("users").document(user.uid).setData(userData);
-        signedInUserDetails = userData;
+        signedInUserDetailsMap = userData;
         return "";
       }
     } on PlatformException catch (e) {
       return e.message;
     }
   }
+  //STOPS: Sign Up new users
+  
 
-  //log in existing user
+  //STARTS: Log in existing user
   Future<String> logInUser() async {
     try {
       user = await _fAuth.signInWithEmailAndPassword(
@@ -133,8 +133,9 @@ class TaskoutModel extends Model {
       return e.message;
     }
   }
+  //STOPS: Log in existing user
 
-  //logout signed in user
+  //STARTS: Logout signed in user
   Future<bool> logOutUser() {
     print(user);
     return _fAuth.signOut().then((_) {
@@ -143,20 +144,9 @@ class TaskoutModel extends Model {
       return false;
     });
   }
+  //STOPS: Logout signed in user
 
-  Future<String> setSignedInUserDetails() async {
-    try {
-      DocumentSnapshot ds =
-          await _firestore.collection("users").document(user.uid).get();
-      signedInUserDetails = ds.data;
-      return "";
-    } on PlatformException catch (e) {
-      print(e.message);
-      return "Could not load your data. Try Again.";
-    }
-  }
-
-  //save new task
+  //STARTS: Save new task
   Future<String> addNewTask(CustomTask task) async {
     try {
       Map<String, dynamic> dataToPut = task.taskData;
@@ -177,4 +167,5 @@ class TaskoutModel extends Model {
       return e.message;
     }
   }
+  //STOPS: Save new task
 }

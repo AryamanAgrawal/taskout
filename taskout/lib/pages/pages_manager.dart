@@ -31,9 +31,9 @@ class PagesManagerState extends State<PagesManager>
     UserPreferences()
   ];
 
-  void closeTaskAlert() {
+  void toggleTaskAlert() {
     setState(() {
-      taskAlert = false;
+      taskAlert = !taskAlert;
     });
   }
 
@@ -88,6 +88,7 @@ class PagesManagerState extends State<PagesManager>
           ScopedModelDescendant<TaskoutModel>(
             builder: (BuildContext context, Widget child, TaskoutModel model) {
               model.toggleNewTaskThroughModel = toggleAddTask;
+              model.toggleTaskAlertThroughModel = toggleTaskAlert;
               return Align(
                 alignment: FractionalOffset.bottomCenter,
                 child: AnimatedContainer(
@@ -118,7 +119,7 @@ class PagesManagerState extends State<PagesManager>
           ),
           taskAlert
               ? TaskAlert(
-                  close: closeTaskAlert,
+                  toggle: toggleTaskAlert,
                 )
               : Container()
         ],

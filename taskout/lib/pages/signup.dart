@@ -38,8 +38,8 @@ class SignUp extends StatelessWidget {
                     PasswordTextField(model),
                     ConfirmAuthButton("Sign Up", () {
                       String username = model.username;
-                      String email = model.getEmail;
-                      String password = model.getPassword;
+                      String email = model.email;
+                      String password = model.password;
                       if (username.length < 4 ||
                           username.split(" ").length != 1) {
                         CustomAlertDialog().buildCustomAlertDialog(context, "Sign Up", "Username should be one word and 5 characters or more");

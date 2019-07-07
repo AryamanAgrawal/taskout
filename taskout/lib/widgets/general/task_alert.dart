@@ -4,8 +4,8 @@ import './text.dart';
 import './custom_chip.dart';
 
 class TaskAlert extends StatefulWidget {
-  final Function close;
-  TaskAlert({this.close});
+  final Function toggle;
+  TaskAlert({this.toggle});
 
   @override
   State<StatefulWidget> createState() {
@@ -21,7 +21,7 @@ class _TaskAlertState extends State<TaskAlert> {
       translateY = 500.0;
     });
     Timer(Duration(milliseconds: 460), () {
-      widget.close();
+      widget.toggle();
     });
   }
 

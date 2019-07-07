@@ -32,8 +32,8 @@ class LogIn extends StatelessWidget {
                   EmailTextField(model),
                   PasswordTextField(model),
                   ConfirmAuthButton("Log In", () {
-                    String email = model.getEmail;
-                    String password = model.getPassword;
+                    String email = model.email;
+                    String password = model.password;
                     if (!RegExp(
                             r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
                         .hasMatch(email)) {

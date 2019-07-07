@@ -126,7 +126,7 @@ class PagesManagerState extends State<PagesManager>
                 gradient: LinearGradient(
                   begin: FractionalOffset.topCenter,
                   end: FractionalOffset.bottomCenter,
-                  colors: [Colors.white, Colors.grey.shade50],
+                  colors: [Colors.white, Colors.grey.shade100],
                 ),
               ),
             ),

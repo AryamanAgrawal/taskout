@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import '../text/heading.dart';
-import '../text/caption_text.dart';
+import '../general/text.dart';
 import './task_summary_circle.dart';
 import '../../taskout_model.dart';
 
@@ -9,10 +8,9 @@ class FavoritePerson extends StatefulWidget {
   final String username;
   final int completed;
   final int total;
-  final Function toggleAddTask;
   final TaskoutModel taskoutModel;
   FavoritePerson(this.name, this.username, this.completed, this.total,
-      {this.toggleAddTask, this.taskoutModel});
+      {this.taskoutModel});
 
   @override
   State<StatefulWidget> createState() {
@@ -40,7 +38,7 @@ class _FavoritePersonState extends State<FavoritePerson> {
                 setState(() {
                   marginLeft = 0.0;
                 });
-                widget.toggleAddTask();
+                widget.taskoutModel.toggleNewTaskThroughModel();
               },
               child: Container(
                 height: 90.0,

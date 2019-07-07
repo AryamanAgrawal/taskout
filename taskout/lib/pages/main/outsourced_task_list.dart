@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class TaskDayList extends StatefulWidget{
+class OutsourcedTaskList extends StatefulWidget{
   @override
   State<StatefulWidget> createState() {
-    return _TaskDayListState();
+    return _OutsourcedTaskListState();
   }
 }
 
-class _TaskDayListState extends State<TaskDayList>{
+class _OutsourcedTaskListState extends State<OutsourcedTaskList>{
   @override
   Widget build(BuildContext context) {
     return Center(

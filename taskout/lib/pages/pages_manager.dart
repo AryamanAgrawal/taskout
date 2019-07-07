@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:taskout/taskout_model.dart';
 import 'package:flare_flutter/flare_actor.dart';
-import 'package:taskout/widgets/text/heading.dart';
 import './addtask.dart';
 import '../widgets/general/task_alert.dart';
 
 //pages import
 import './main/home.dart';
-import './main/weekly_tasks.dart';
-import './main/task_day_list.dart';
+import './main/received_task_list.dart';
+import './main/outsourced_task_list.dart';
 import './main/user_preferences.dart';
 
 class PagesManager extends StatefulWidget {
@@ -24,13 +23,12 @@ class PagesManagerState extends State<PagesManager>
   bool clickedNewTask = false;
   bool taskAlert = true;
   int selectedIndex = 0;
-  String text = "Home";
   TabController _tabController;
-  List<String> appBarTitles = [
-    "Taskout",
-    "This week",
-    "All Tasks",
-    "Preferences"
+  List<Widget> _pagesList = [
+    Home(),
+    ReceivedTaskList(),
+    OutsourcedTaskList(),
+    UserPreferences()
   ];
 
   void closeTaskAlert() {
@@ -81,55 +79,42 @@ class PagesManagerState extends State<PagesManager>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0.0,
-        title: Heading(
-          appBarTitles[selectedIndex],
-          Colors.black,
-          fontSize: 34.0,
-        ),
-        backgroundColor: Colors.white,
-      ),
       body: Stack(
         children: <Widget>[
           TabBarView(
             controller: _tabController,
-            children: <Widget>[
-              Home(
-                toggleAddTask: toggleAddTask,
-              ),
-              WeeklyTasks(),
-              TaskDayList(),
-              UserPreferences()
-            ],
+            children: _pagesList,
           ),
-          Align(
-            alignment: FractionalOffset.bottomCenter,
-            child: AnimatedContainer(
-              child: Visibility(
-                maintainState: false,
-                visible: clickedNewTask ? true : false,
-                child: ScopedModelDescendant<TaskoutModel>(
-                  builder:
-                      (BuildContext context, Widget child, TaskoutModel model) {
-                    return AddTask(model, toggleAddTask);
-                  },
+          ScopedModelDescendant<TaskoutModel>(
+            builder: (BuildContext context, Widget child, TaskoutModel model) {
+              model.toggleNewTaskThroughModel = toggleAddTask;
+              return Align(
+                alignment: FractionalOffset.bottomCenter,
+                child: AnimatedContainer(
+                  child: Visibility(
+                    maintainState: false,
+                    visible: clickedNewTask ? true : false,
+                    child: AddTask(model),
+                  ),
+                  duration: Duration(milliseconds: 250),
+                  height: clickedNewTask
+                      ? MediaQuery.of(context).size.height
+                      : 10.0,
+                  width: clickedNewTask
+                      ? MediaQuery.of(context).size.height
+                      : 10.0,
+                  decoration: BoxDecoration(
+                    borderRadius:
+                        BorderRadius.circular(clickedNewTask ? 0.0 : 300.0),
+                    gradient: LinearGradient(
+                      begin: FractionalOffset.topCenter,
+                      end: FractionalOffset.bottomCenter,
+                      colors: [Colors.white, Colors.grey.shade100],
+                    ),
+                  ),
                 ),
-              ),
-              duration: Duration(milliseconds: 250),
-              height:
-                  clickedNewTask ? MediaQuery.of(context).size.height : 10.0,
-              width: clickedNewTask ? MediaQuery.of(context).size.height : 10.0,
-              decoration: BoxDecoration(
-                borderRadius:
-                    BorderRadius.circular(clickedNewTask ? 0.0 : 300.0),
-                gradient: LinearGradient(
-                  begin: FractionalOffset.topCenter,
-                  end: FractionalOffset.bottomCenter,
-                  colors: [Colors.white, Colors.grey.shade100],
-                ),
-              ),
-            ),
+              );
+            },
           ),
           taskAlert
               ? TaskAlert(

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../general/circle_progress_bar.dart';
-import '../text/subheading.dart';
-import '../text/caption_text.dart';
+import '../general/text.dart';
 
 class TaskSummaryCircle extends StatelessWidget {
   final int completed;

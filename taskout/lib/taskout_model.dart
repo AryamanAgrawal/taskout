@@ -13,13 +13,16 @@ class TaskoutModel extends Model {
   bool signUpWithGoogle = false;
   FirebaseUser user;
   FirebaseAuth _fAuth = FirebaseAuth.instance;
-  Firestore _firestore = Firestore.instance;
   GoogleSignIn _gSignIn = new GoogleSignIn();
   Map<String, dynamic> signedInUserDetails;
+  Firestore _firestore = Firestore.instance;
   String signedInUsername;
-  bool _clickedNewTask = false;
-  String _usernameForTask;
+  Function toggleNewTaskThroughModel;
 
+
+  //STARTS: Handling username filling for adding task through favorite
+  String _usernameForTask;
+  
   String get usernameForTask {
     return _usernameForTask;
   }
@@ -27,15 +30,7 @@ class TaskoutModel extends Model {
   void setUsernameForTask(String value) {
     _usernameForTask = value;
   }
-
-  bool get clickedNewTask {
-    return _clickedNewTask;
-  }
-
-  void toggleAddTask() {
-    _clickedNewTask = !_clickedNewTask;
-    notifyListeners();
-  }
+  //ENDS: Handling username filling for adding task through favorite
 
   String get getUsername {
     return username;

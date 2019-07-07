@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
-import '../../widgets/home/favorite_person.dart';
 import '../../taskout_model.dart';
-import '../../widgets/text/caption_text.dart';
-import '../../widgets/text/subheading.dart';
+import '../../widgets/home/favorite_person.dart';
+import '../../widgets/general/text.dart';
 import '../../widgets/home/task_summary_circle.dart';
 
 class Home extends StatefulWidget {
-  final Function toggleAddTask;
-  Home({this.toggleAddTask});
-
   @override
   State<StatefulWidget> createState() {
     return _HomeState();
@@ -49,6 +45,12 @@ class _HomeState extends State<Home> {
                   padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 30.0),
                   child: Column(
                     children: <Widget>[
+                      _addGap(40.0, 0.0),
+                      Heading(
+                        "Taskout",
+                        Colors.black,
+                        fontSize: 34.0,
+                      ),
                       _addGap(10.0, 0.0),
                       CaptionText(
                         model.signedInUserDetailsMap["username"] +
@@ -84,7 +86,6 @@ class _HomeState extends State<Home> {
                 "padamchopra",
                 50,
                 85,
-                toggleAddTask: widget.toggleAddTask,
                 taskoutModel: model,
               ),
             ],

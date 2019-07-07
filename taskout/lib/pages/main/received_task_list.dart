@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import '../../widgets/general/circle_progress_bar.dart';
 
-class WeeklyTasks extends StatefulWidget {
+class ReceivedTaskList extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return _WeeklyTasksState();
+    return _ReceivedTaskListState();
   }
 }
 
-class _WeeklyTasksState extends State<WeeklyTasks> {
+class _ReceivedTaskListState extends State<ReceivedTaskList> {
   
 
   @override

@@ -1,11 +1,7 @@
 import 'dart:async';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../text/heading.dart';
-import '../text/subheading.dart';
-import '../text/caption_text.dart';
-import '../general/custom_chip.dart';
+import './text.dart';
+import './custom_chip.dart';
 
 class TaskAlert extends StatefulWidget {
   final Function close;
@@ -18,7 +14,7 @@ class TaskAlert extends StatefulWidget {
 }
 
 class _TaskAlertState extends State<TaskAlert> {
-  double translateY = 0.0;
+  double translateY = 500.0;
 
   void _dismissAlert() {
     setState(() {
@@ -26,6 +22,16 @@ class _TaskAlertState extends State<TaskAlert> {
     });
     Timer(Duration(milliseconds: 460), () {
       widget.close();
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    Timer(Duration(milliseconds: 200), () {
+      setState(() {
+        translateY = 0.0;
+      });
     });
   }
 

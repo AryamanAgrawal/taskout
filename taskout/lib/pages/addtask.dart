@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import '../taskout_model.dart';
 import 'dart:async';
-import '../widgets/text/heading.dart';
-import '../widgets/text/subheading.dart';
+import '../widgets/general/text.dart';
 import '../models/task.dart';
 import '../widgets/general/custom_alert_dialog.dart';
 import '../widgets/newtask/tags.dart';
@@ -11,8 +10,7 @@ import '../widgets/newtask/deadline.dart';
 
 class AddTask extends StatefulWidget {
   final TaskoutModel _taskoutModel;
-  final Function toggleAddTask;
-  AddTask(this._taskoutModel, this.toggleAddTask);
+  AddTask(this._taskoutModel);
   @override
   State<StatefulWidget> createState() {
     return _AddTaskState();
@@ -119,7 +117,7 @@ class _AddTaskState extends State<AddTask> {
           if (value == "added") {
             CustomAlertDialog().buildCustomAlertDialog(
                 context, "Task Delegated", "Task has been sent successfully");
-            widget.toggleAddTask();
+            widget._taskoutModel.toggleNewTaskThroughModel();
           } else {
             setState(() {
               submitting = false;

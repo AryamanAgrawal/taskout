@@ -4,8 +4,7 @@ import '../taskout_model.dart';
 import './pages_manager.dart';
 //custom widgets
 import '../widgets/general/custom_alert_dialog.dart';
-import '../widgets/text/heading.dart';
-import '../widgets/text/caption_text.dart';
+import '../widgets/general/text.dart';
 import '../widgets/auth/background_container.dart';
 import '../widgets/auth/google_signin.dart';
 import '../widgets/auth/email_field.dart';

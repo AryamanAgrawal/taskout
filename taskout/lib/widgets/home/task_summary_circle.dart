@@ -7,10 +7,10 @@ class TaskSummaryCircle extends StatelessWidget {
   final int total;
   final IconData iconData;
   final double size;
-  final bool forFavorite;
+  final bool concised;
 
   TaskSummaryCircle(this.completed, this.total, this.iconData,
-      {this.size = 100.0, this.forFavorite = false});
+      {this.size = 100.0, this.concised = false});
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +25,7 @@ class TaskSummaryCircle extends StatelessWidget {
             value: completed / total,
             backgroundColor: Colors.grey.shade200,
           ),
-          forFavorite
+          concised
               ? Container()
               : Align(
                   alignment: FractionalOffset.topRight,
@@ -48,11 +48,11 @@ class TaskSummaryCircle extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Subheading(
-                  forFavorite
+                  concised
                       ? completed.toString()
                       : completed.toString() + "/" + total.toString(),
                   Colors.black),
-              forFavorite
+              concised
                   ? Container()
                   : CaptionText("Completed", Colors.black54)
             ],

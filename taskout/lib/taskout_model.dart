@@ -100,7 +100,8 @@ class TaskoutModel extends Model {
   CustomTask selectedTask;
   String negativeAlertButtonText;
   String positiveAlertButtonText;
-  void generateAlert(CustomTask task, String negativeButtonText, String positiveButtonText){
+  void generateAlert(
+      CustomTask task, String negativeButtonText, String positiveButtonText) {
     selectedTask = task;
     negativeAlertButtonText = negativeButtonText;
     positiveAlertButtonText = positiveButtonText;

@@ -12,7 +12,18 @@ class CustomTask {
   DateTime created;
   List<Map<String, dynamic>> updates;
 
-  CustomTask(this.from, this.to,this.title,this.description,{this.tags,this.date,this.time,this.priority, this.created, this.updates});
+  CustomTask(
+    this.from,
+    this.to,
+    this.title,
+    this.description, {
+    this.tags,
+    this.date,
+    this.time,
+    this.priority,
+    this.created,
+    this.updates,
+  });
 
   String _formatDate(DateTime toFormat) {
     String day = toFormat.day.toString();
@@ -30,8 +41,8 @@ class CustomTask {
       hoursInt = hoursInt + 12;
     }
     String hours = hoursInt.toString();
-    hours = hours.length ==1 ? "0" + hours : hours;
-    minutes = minutes.length ==1 ? "0" + minutes : minutes;
+    hours = hours.length == 1 ? "0" + hours : hours;
+    minutes = minutes.length == 1 ? "0" + minutes : minutes;
     return hours + ":" + minutes + ":00.000";
   }
 
@@ -42,7 +53,7 @@ class CustomTask {
       "title": title,
       "description": description,
     };
-    if (tags != null && tags.length >0) {
+    if (tags != null && tags.length > 0) {
       data["tags"] = tags;
     }
     if (date != null) {
@@ -58,10 +69,10 @@ class CustomTask {
     if (priority != null) {
       data["priority"] = priority;
     }
-    if(created != null){
+    if (created != null) {
       data["created"] = created.millisecondsSinceEpoch;
     }
-    if(updates != null){
+    if (updates != null) {
       data["updates"] = updates;
     }
     return data;

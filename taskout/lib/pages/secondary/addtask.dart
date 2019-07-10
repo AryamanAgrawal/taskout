@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import '../taskout_model.dart';
+import '../../taskout_model.dart';
 import 'dart:async';
-import '../widgets/general/text.dart';
-import '../models/task.dart';
-import '../widgets/general/custom_alert_dialog.dart';
-import '../widgets/newtask/tags.dart';
-import '../widgets/newtask/priority_buttons.dart';
-import '../widgets/newtask/deadline.dart';
+import '../../widgets/general/text.dart';
+import '../../models/task.dart';
+import '../../widgets/general/custom_alert_dialog.dart';
+import '../../widgets/newtask/tags.dart';
+import '../../widgets/newtask/priority_buttons.dart';
+import '../../widgets/newtask/deadline.dart';
 
 class AddTask extends StatefulWidget {
   final TaskoutModel _taskoutModel;
@@ -41,7 +41,7 @@ class _AddTaskState extends State<AddTask> {
     );
   }
 
-  Widget _buildRecipientTextField(String username){
+  Widget _buildRecipientTextField(String username) {
     widget._taskoutModel.setUsernameForTask(null);
     print("Right field");
     return TextFormField(
@@ -49,6 +49,8 @@ class _AddTaskState extends State<AddTask> {
       validator: (String value) {
         if (value.isEmpty) {
           return "Required";
+        } else {
+          return null;
         }
       },
       onSaved: (String value) {
@@ -70,6 +72,8 @@ class _AddTaskState extends State<AddTask> {
       validator: (String value) {
         if (value.isEmpty) {
           return "Required";
+        } else {
+          return null;
         }
       },
       onSaved: (String value) {
@@ -92,46 +96,49 @@ class _AddTaskState extends State<AddTask> {
     );
   }
 
-  void addOutsourcedTask() {
+  void addOutsourcedTask(BuildContext context) {
     bool fieldsAreNotEmpty = _formKey.currentState.validate();
-    if (fieldsAreNotEmpty) {
+    if (fieldsAreNotEmpty && deadline.dateIsSelected) {
       setState(() {
         submitting = true;
       });
       _formKey.currentState.save();
-        CustomTask task = CustomTask(
-          widget._taskoutModel.signedInUserDetailsMap["username"],
-          to,
-          title,
-          description,
-          tags: taskTags.tags != null ? taskTags.tags : null,
-          date: deadline.dateIsSelected ? deadline.selectedDate : null,
-          time: deadline.timeIsSelected ? deadline.selectedTime : null,
-          priority: priorityButtons.taskPriority != null
-              ? priorityButtons.taskPriority
-              : null,
-          created: DateTime.now(),
-        );
-        widget._taskoutModel.addNewTask(task).then((String value) {
-          if (value == "added") {
-            CustomAlertDialog().buildCustomAlertDialog(
-                context, "Task Delegated", "Task has been sent successfully");
-            widget._taskoutModel.toggleNewTaskThroughModel();
-          } else {
-            setState(() {
-              submitting = false;
-            });
-            CustomAlertDialog()
-                .buildCustomAlertDialog(context, "Woopsie", value);
-          }
-        });
+      CustomTask task = CustomTask(
+        widget._taskoutModel.signedInUserDetailsMap["username"],
+        to,
+        title,
+        description,
+        tags: taskTags.tags != null ? taskTags.tags : null,
+        date: deadline.dateIsSelected ? deadline.selectedDate : null,
+        time: deadline.timeIsSelected ? deadline.selectedTime : null,
+        priority: priorityButtons.taskPriority != null
+            ? priorityButtons.taskPriority
+            : null,
+        created: DateTime.now(),
+      );
+      widget._taskoutModel.addNewTask(task).then((String value) {
+        if (value == "added") {
+          CustomAlertDialog().buildCustomAlertDialog(
+              context, "Task Delegated", "Task has been sent successfully");
+          widget._taskoutModel.toggleNewTaskThroughModel();
+        } else {
+          setState(() {
+            submitting = false;
+          });
+          CustomAlertDialog().buildCustomAlertDialog(context, "Woopsie", value);
+        }
+      });
+    } else if (deadline.dateIsSelected == false) {
+      print("reaching");
+      CustomAlertDialog().buildCustomAlertDialog(
+          context, "Add Task", "Please select a date for deadline");
     }
   }
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
-    Timer(Duration(milliseconds: 250), (){
+    Timer(Duration(milliseconds: 250), () {
       setState(() {
         opacity = 1.0;
       });
@@ -161,7 +168,9 @@ class _AddTaskState extends State<AddTask> {
                 submitting
                     ? CircularProgressIndicator()
                     : IconButton(
-                        onPressed: addOutsourcedTask,
+                        onPressed: () {
+                          addOutsourcedTask(context);
+                        },
                         icon: Icon(
                           Icons.send,
                           color: Color(0xff4AD284),
@@ -178,7 +187,10 @@ class _AddTaskState extends State<AddTask> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    widget._taskoutModel.usernameForTask == null ? _buildTextField("Recipient's Username/Email*", 1) : _buildRecipientTextField(widget._taskoutModel.usernameForTask),
+                    widget._taskoutModel.usernameForTask == null
+                        ? _buildTextField("Recipient's Username/Email*", 1)
+                        : _buildRecipientTextField(
+                            widget._taskoutModel.usernameForTask),
                     _addGap(20.0, 0.0),
                     _buildTextField("Title*", 2),
                     _addGap(20.0, 0.0),

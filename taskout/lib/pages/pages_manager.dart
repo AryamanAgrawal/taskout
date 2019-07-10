@@ -1,14 +1,15 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:taskout/taskout_model.dart';
 import 'package:flare_flutter/flare_actor.dart';
-import './addtask.dart';
+import './secondary/addtask.dart';
 import '../widgets/general/task_alert.dart';
 
 //pages import
 import './main/home.dart';
-import './main/received_task_list.dart';
-import './main/outsourced_task_list.dart';
+import './main/task_list.dart';
 import './main/user_preferences.dart';
 
 class PagesManager extends StatefulWidget {
@@ -21,13 +22,17 @@ class PagesManager extends StatefulWidget {
 class PagesManagerState extends State<PagesManager>
     with SingleTickerProviderStateMixin {
   bool clickedNewTask = false;
-  bool taskAlert = true;
+  bool taskAlert = false;
   int selectedIndex = 0;
-  TabController _tabController;
+  double opacity = 1.0;
   List<Widget> _pagesList = [
     Home(),
-    ReceivedTaskList(),
-    OutsourcedTaskList(),
+    TaskList(
+      mode: "Received",
+    ),
+    TaskList(
+      mode: "Outsourced",
+    ),
     UserPreferences()
   ];
 
@@ -41,9 +46,14 @@ class PagesManagerState extends State<PagesManager>
     return IconButton(
       onPressed: () {
         setState(() {
-          selectedIndex = index;
+          opacity = 0.0;
         });
-        _tabController.animateTo(index);
+        Timer(Duration(milliseconds: 210), () {
+          setState(() {
+            opacity = 1.0;
+            selectedIndex = index;
+          });
+        });
       },
       iconSize: index == 1 ? 22.0 : 27.0,
       icon: Icon(
@@ -60,30 +70,14 @@ class PagesManagerState extends State<PagesManager>
   }
 
   @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(vsync: this, length: 4);
-    _tabController.addListener(() {
-      setState(() {
-        selectedIndex = _tabController.index;
-      });
-    });
-  }
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: <Widget>[
-          TabBarView(
-            controller: _tabController,
-            children: _pagesList,
+          AnimatedOpacity(
+            opacity: opacity,
+            duration: Duration(milliseconds: 200),
+            child: _pagesList[selectedIndex],
           ),
           ScopedModelDescendant<TaskoutModel>(
             builder: (BuildContext context, Widget child, TaskoutModel model) {
@@ -140,7 +134,10 @@ class PagesManagerState extends State<PagesManager>
       ),
       bottomNavigationBar: BottomAppBar(
         child: Container(
-          margin: EdgeInsets.only(left: 12.0, right: 12.0),
+          height: 60.0,
+          margin: EdgeInsets.symmetric(
+            horizontal: 12.0,
+          ),
           child: Row(
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -114,7 +114,7 @@ class _FavoritePersonState extends State<FavoritePerson> {
                       widget.total,
                       Icons.thumbs_up_down,
                       size: 50.0,
-                      forFavorite: true,
+                      concised: true,
                     )
                   ],
                 ),

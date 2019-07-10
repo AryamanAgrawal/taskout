@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'dart:async';
@@ -35,6 +36,7 @@ class TaskoutModel extends Model {
       DocumentSnapshot ds =
           await _firestore.collection("users").document(user.uid).get();
       signedInUserDetailsMap = ds.data;
+      getTasksFromDatabase();
       return "";
     } on PlatformException catch (e) {
       print(e.message);
@@ -42,6 +44,94 @@ class TaskoutModel extends Model {
     }
   }
   //STOPS: Getting signed in user's details
+
+  //STARTS: Getting tasks initially
+  List<CustomTask> receivedTasks = [];
+  List<CustomTask> outsourcedTasks = [];
+  void getTasksFromDatabase() async {
+    if (signedInUserDetailsMap != null) {
+      QuerySnapshot qsoutsourced = await _firestore
+          .collection("tasks")
+          .where("from", isEqualTo: signedInUserDetailsMap["username"])
+          .getDocuments();
+      QuerySnapshot qsreceived = await _firestore
+          .collection("tasks")
+          .where("to", isEqualTo: signedInUserDetailsMap["username"])
+          .getDocuments();
+      for (DocumentSnapshot ds in qsoutsourced.documents) {
+        outsourcedTasks.add(convertMapToTask(ds.data));
+      }
+      sortOutsourcedTask();
+      for (DocumentSnapshot ds in qsreceived.documents) {
+        receivedTasks.add(convertMapToTask(ds.data));
+      }
+      receivedTasks.sort((CustomTask a, CustomTask b) {
+        if (a.taskData["deadline"] < b.taskData["deadline"]) {
+          return 1;
+        } else {
+          return 2;
+        }
+      });
+    } else {
+      setSignedInUserDetails();
+    }
+  }
+  //STOPS: Getting tasks initially
+
+  //STARTS: sort and refresh tasks
+  Function refreshTaskList;
+  void sortOutsourcedTask() {
+    outsourcedTasks.sort((CustomTask a, CustomTask b) {
+      if (a.taskData["deadline"] < b.taskData["deadline"]) {
+        return -1;
+      } else if (a.taskData["deadline"] > b.taskData["deadline"]) {
+        return 1;
+      } else {
+        return 0;
+      }
+    });
+    if (refreshTaskList != null) {
+      refreshTaskList();
+    }
+  }
+  //STOPS: sort and refresh tasks
+
+  //STARTS: select task to show in alert
+  CustomTask selectedTask;
+  String negativeAlertButtonText;
+  String positiveAlertButtonText;
+  void generateAlert(CustomTask task, String negativeButtonText, String positiveButtonText){
+    selectedTask = task;
+    negativeAlertButtonText = negativeButtonText;
+    positiveAlertButtonText = positiveButtonText;
+  }
+
+  //STARTS: Convert Map to Task
+  CustomTask convertMapToTask(Map<String, dynamic> taskData) {
+    List<Map<String, dynamic>> updates = [];
+    for (int i = 0; i < List.from(taskData["updates"]).length; i++) {
+      updates.add(Map<String, dynamic>.from(taskData["updates"][i]));
+    }
+    CustomTask task = CustomTask(
+      taskData["from"],
+      taskData["to"],
+      taskData["title"],
+      taskData["description"],
+      created: DateTime.fromMillisecondsSinceEpoch(taskData["created"]),
+      date: taskData.containsKey("deadline")
+          ? DateTime.fromMillisecondsSinceEpoch(taskData["deadline"])
+          : null,
+      time: taskData.containsKey("deadline")
+          ? TimeOfDay.fromDateTime(
+              DateTime.fromMillisecondsSinceEpoch(taskData["deadline"]))
+          : null,
+      priority: taskData.containsKey("priority") ? taskData["priority"] : null,
+      tags: taskData.containsKey("tags") ? List.from(taskData["tags"]) : null,
+      updates: taskData.containsKey("updates") ? updates : null,
+    );
+    return task;
+  }
+  //STOPS: Convert Map to Task
 
   //STARTS: Google Sign Up and Logging in
   bool signUpWithGoogle = false;
@@ -120,7 +210,6 @@ class TaskoutModel extends Model {
     }
   }
   //STOPS: Sign Up new users
-  
 
   //STARTS: Log in existing user
   Future<String> logInUser() async {
@@ -150,11 +239,9 @@ class TaskoutModel extends Model {
   Future<String> addNewTask(CustomTask task) async {
     try {
       Map<String, dynamic> dataToPut = task.taskData;
-      List<Map<String, dynamic>> updates = [{
-        "status": "Requested",
-        "time": dataToPut["created"],
-        "color": "grey"
-      }];
+      List<Map<String, dynamic>> updates = [
+        {"status": "Requested", "time": dataToPut["created"], "color": "grey"}
+      ];
       dataToPut["updates"] = updates;
       if (!RegExp(
               r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
@@ -168,6 +255,9 @@ class TaskoutModel extends Model {
         }
       }
       await _firestore.collection("tasks").add(dataToPut);
+      CustomTask taskToAdd = convertMapToTask(dataToPut);
+      outsourcedTasks.add(taskToAdd);
+      sortOutsourcedTask();
       return "added";
     } on PlatformException catch (e) {
       return e.message;

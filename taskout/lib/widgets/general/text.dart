@@ -4,7 +4,8 @@ class Heading extends StatelessWidget {
   final String text;
   final Color color;
   final double fontSize;
-  Heading(this.text,this.color,{this.fontSize = 36.0});
+  final TextAlign textAlign;
+  Heading(this.text,this.color,{this.fontSize = 36.0, this.textAlign = TextAlign.center});
   @override
   Widget build(BuildContext context) {
     return Text(
@@ -14,7 +15,7 @@ class Heading extends StatelessWidget {
         color: color,
         fontWeight: FontWeight.bold,
       ),
-      textAlign: TextAlign.center,
+      textAlign: textAlign,
     );
   }
 }

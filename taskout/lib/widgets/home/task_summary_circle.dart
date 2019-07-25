@@ -20,7 +20,7 @@ class TaskSummaryCircle extends StatelessWidget {
       child: Stack(
         alignment: FractionalOffset.center,
         children: <Widget>[
-          CircleProgressBar(
+          CircleProgressBar(            
             foregroundColor: Color(0xff4A69FF),
             value: completed / total,
             backgroundColor: Colors.grey.shade200,

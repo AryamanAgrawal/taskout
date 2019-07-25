@@ -19,13 +19,14 @@ class TaskList extends StatefulWidget {
   }
 }
 
+int previousIndex = 0;
+int selectedIndex = 0;
+int nextIndex = 0;
+
 class _TaskListState extends State<TaskList> {
   DateTime now = DateTime.now();
-  int selectedIndex = 0;
   ScrollController scrollController = ScrollController();
   List<CustomTask> taskListToUse;
-  int previousIndex = 0;
-  int nextIndex = 0;
 
   Widget _addGap(double height, double width) {
     return SizedBox(
@@ -38,61 +39,6 @@ class _TaskListState extends State<TaskList> {
     setState(() {
       print("refreshed");
     });
-  }
-
-  String getMonth(int monthNumber) {
-    String month;
-    switch (monthNumber) {
-      case 1:
-        month = "January";
-        break;
-      case 2:
-        month = "February";
-        break;
-      case 3:
-        month = "March";
-        break;
-      case 4:
-        month = "April";
-        break;
-      case 5:
-        month = "May";
-        break;
-      case 6:
-        month = "June";
-        break;
-      case 7:
-        month = "July";
-        break;
-      case 8:
-        month = "August";
-        break;
-      case 9:
-        month = "September";
-        break;
-      case 10:
-        month = "October";
-        break;
-      case 11:
-        month = "November";
-        break;
-      case 12:
-        month = "December";
-        break;
-      default:
-        month = "-";
-        break;
-    }
-    return month;
-  }
-
-  String todaysdate(int monthNumber) {
-    return (" " +
-        now.day.toString() +
-        " " +
-        getMonth(monthNumber).toUpperCase() +
-        " " +
-        now.year.toString());
   }
 
   String getDayofWeek(int index) {
@@ -161,21 +107,6 @@ class _TaskListState extends State<TaskList> {
         .millisecondsSinceEpoch;
   }
 
-  String deadlineTime(int hour, int minutes) {
-    String meridian = "AM";
-    if (hour > 12) {
-      hour = hour - 12;
-      meridian = "PM";
-    } else if (hour == 12) {
-      meridian = "PM";
-    }
-    String hourString = hour.toString();
-    String minuteString = minutes.toString();
-    hourString = hourString.length == 1 ? "0" + hourString : hourString;
-    minuteString = minuteString.length == 1 ? "0" + minuteString : minuteString;
-    return hourString + ":" + minuteString + " " + meridian;
-  }
-
   void sortList() {
     int forDayToStartView = _getTodaysDate(0);
     int forDayToEndView = _getTodaysDate(1);
@@ -212,65 +143,6 @@ class _TaskListState extends State<TaskList> {
     }
   }
 
-  Widget _buildTaskTile(BuildContext context, int index, TaskoutModel model) {
-    Map<String, dynamic> currentTask = {};
-    Color color;
-    String deadline;
-    bool hasPassed = false;
-    index = previousIndex + index;
-    if (index != nextIndex) {
-      currentTask = taskListToUse[index].taskData;
-      if (currentTask.containsKey("priority")) {
-        if (currentTask["priority"] == 1) {
-          color = Colors.red.shade500;
-        } else if (currentTask["priority"] == 2) {
-          color = Colors.blue.shade500;
-        } else {
-          color = Colors.green.shade500;
-        }
-      }
-      if (currentTask.containsKey("deadline")) {
-        DateTime currentDateTime =
-            DateTime.fromMicrosecondsSinceEpoch(currentTask["deadline"] * 1000);
-        TimeOfDay timeOfDay = TimeOfDay.fromDateTime(currentDateTime);
-        deadline = deadlineTime(timeOfDay.hour, timeOfDay.minute);
-        if (currentDateTime.isBefore(DateTime.now())) {
-          hasPassed = true;
-          deadline = deadline +
-              " on " +
-              currentDateTime.day.toString() +
-              " " +
-              getMonth(currentDateTime.month);
-        }
-      }
-    }
-    if (index == nextIndex) {
-      return CaptionText(
-        "\n${nextIndex - previousIndex} taskouts for today\n\n",
-        Colors.black45,
-        textAlign: TextAlign.center,
-      );
-    } else {
-      return GestureDetector(
-        onTap: () {
-          model.generateAlert(taskListToUse[index], "DISMISS", "VIEW MORE");
-          model.toggleTaskAlertThroughModel();
-        },
-        child: TaskTile(
-          title: currentTask["title"],
-          status: currentTask["updates"][currentTask["updates"].length - 1]
-              ["status"],
-          toOrFrom: widget.mode == "Received"
-              ? "From: ${currentTask['from']}"
-              : "To: ${currentTask['to']}",
-          color: color,
-          deadlinetime: deadline == "00:00 AM" ? null : deadline,
-          hasPassed: hasPassed,
-        ),
-      );
-    }
-  }
-  //TODO: Remove this comment
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -279,7 +151,6 @@ class _TaskListState extends State<TaskList> {
       color: Colors.white, //Color(0xfff9fafc),
       child: ScopedModelDescendant<TaskoutModel>(
         builder: (BuildContext context, Widget child, TaskoutModel model) {
-          model.refreshTaskList = refreshStateOfList;
           if (widget.mode == "Received") {
             taskListToUse = model.receivedTasks;
           } else {
@@ -300,7 +171,7 @@ class _TaskListState extends State<TaskList> {
                       FullWidth(
                         padding: 20.0,
                         widget: Subheading(
-                          todaysdate(now.month),
+                          todaysdate(now.month, now),
                           Colors.black54,
                           textAlign: TextAlign.start,
                         ),
@@ -362,7 +233,12 @@ class _TaskListState extends State<TaskList> {
                     scrollDirection: Axis.vertical,
                     itemCount: nextIndex - previousIndex + 1,
                     itemBuilder: (BuildContext context, int index) =>
-                        _buildTaskTile(context, index, model),
+                        buildTaskTile(
+                            context: context,
+                            index: index,
+                            mode: widget.mode,
+                            model: model,
+                            taskListToUse: taskListToUse),
                   ),
                 ),
               )
@@ -372,4 +248,138 @@ class _TaskListState extends State<TaskList> {
       ),
     );
   }
+}
+
+String getMonth(int monthNumber) {
+  String month;
+  switch (monthNumber) {
+    case 1:
+      month = "January";
+      break;
+    case 2:
+      month = "February";
+      break;
+    case 3:
+      month = "March";
+      break;
+    case 4:
+      month = "April";
+      break;
+    case 5:
+      month = "May";
+      break;
+    case 6:
+      month = "June";
+      break;
+    case 7:
+      month = "July";
+      break;
+    case 8:
+      month = "August";
+      break;
+    case 9:
+      month = "September";
+      break;
+    case 10:
+      month = "October";
+      break;
+    case 11:
+      month = "November";
+      break;
+    case 12:
+      month = "December";
+      break;
+    default:
+      month = "-";
+      break;
+  }
+  return month;
+}
+
+String todaysdate(int monthNumber, DateTime now) {
+  return (" " +
+      now.day.toString() +
+      " " +
+      getMonth(monthNumber).toUpperCase() +
+      " " +
+      now.year.toString());
+}
+
+Widget buildTaskTile(
+    {BuildContext context,
+    int index,
+    TaskoutModel model,
+    List taskListToUse,
+    String mode}) {
+  Map<String, dynamic> currentTask = {};
+  Color color;
+  String deadline;
+  bool hasPassed = false;
+  index = previousIndex + index;
+  if (index != nextIndex) {
+    currentTask = taskListToUse[index].taskData;
+    if (currentTask.containsKey("priority")) {
+      if (currentTask["priority"] == 1) {
+        color = Colors.red.shade500;
+      } else if (currentTask["priority"] == 2) {
+        color = Colors.blue.shade500;
+      } else {
+        color = Colors.green.shade500;
+      }
+    }
+    if (currentTask.containsKey("deadline")) {
+      DateTime currentDateTime =
+          DateTime.fromMicrosecondsSinceEpoch(currentTask["deadline"] * 1000);
+      TimeOfDay timeOfDay = TimeOfDay.fromDateTime(currentDateTime);
+      deadline = deadlineTime(timeOfDay.hour, timeOfDay.minute);
+      if (currentDateTime.isBefore(DateTime.now())) {
+        hasPassed = true;
+        deadline = deadline +
+            " on " +
+            currentDateTime.day.toString() +
+            " " +
+            getMonth(currentDateTime.month);
+      }
+    }
+  }
+  if (index == nextIndex) {
+    return CaptionText(
+      "\n${nextIndex - previousIndex} taskouts for today\n\n",
+      Colors.black45,
+      textAlign: TextAlign.center,
+    );
+  } else {
+    return GestureDetector(
+      onTap: () {
+        model.generateAlert(taskListToUse[index], "DISMISS", "VIEW MORE");
+        model.toggleTaskAlertThroughModel();
+      },
+      child: TaskTile(
+        title: currentTask["title"],
+        status: currentTask["updates"][currentTask["updates"].length - 1]
+            ["status"],
+        toOrFrom: mode == "Received"
+            ? "From: ${currentTask['from']}"
+            : "To: ${currentTask['to']}",
+        color: color,
+        deadlinetime: deadline == "00:00 AM" ? null : deadline,
+        hasPassed: hasPassed,
+      ),
+    );
+  }
+}
+
+String deadlineTime(int hour, int minutes) {
+  String meridian = "AM";
+  if (hour > 12) {
+    hour = hour - 12;
+    meridian = "PM";
+  } else if (hour == 12) {
+    meridian = "PM";
+  }
+  String hourString = hour.toString();
+  String minuteString = minutes.toString();
+  hourString = hourString.length == 1 ? "0" + hourString : hourString;
+  minuteString = minuteString.length == 1 ? "0" + minuteString : minuteString;
+  return hourString + ":" + minuteString + " " + meridian;
 }

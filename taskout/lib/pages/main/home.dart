@@ -4,6 +4,7 @@ import '../../taskout_model.dart';
 import '../../widgets/home/favorite_person.dart';
 import '../../widgets/general/text.dart';
 import '../../widgets/home/task_summary_circle.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -47,14 +48,14 @@ class _HomeState extends State<Home> {
                     children: <Widget>[
                       _addGap(40.0, 0.0),
                       Heading(
-                        "Taskout",
+                        "taskout",
                         Colors.black,
                         fontSize: 34.0,
                       ),
                       _addGap(10.0, 0.0),
                       CaptionText(
-                        model.signedInUserDetailsMap["username"] +
-                            "'s taskout summary:",
+                        //   model.signedInUserDetailsMap["username"] +
+                        "Your summary",
                         Colors.black45,
                         textAlign: TextAlign.center,
                       ),
@@ -80,13 +81,54 @@ class _HomeState extends State<Home> {
                   fontSize: 16.0,
                 ),
               ),
-              _addGap(5.0, 0.0),
-              FavoritePerson(
-                "Padam Chopra",
-                "padamchopra",
-                50,
-                85,
-                taskoutModel: model,
+              _addGap(10.0, 0.0),
+              GestureDetector(
+                child: Slidable(
+                  actionPane: SlidableBehindActionPane(),
+                  actionExtentRatio: 0.25,
+                  actions: <Widget>[
+                    IconSlideAction(
+                      caption: 'Add',
+                      color: Colors.green,
+                      icon: Icons.add,
+                      onTap: () {},
+                    ),
+                  ],
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(0.0),
+                    ),
+                    padding: EdgeInsets.all(20.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Heading(
+                              'Padam Chopra',
+                              Colors.black,
+                              fontSize: 18.0,
+                            ),
+                            CaptionText('padamchopra', Colors.grey.shade500)
+                          ],
+                        ),
+                        TaskSummaryCircle(
+                          50,
+                          85,
+                          Icons.thumbs_up_down,
+                          size: 50.0,
+                          concised: true,
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                onTap: () {
+                  model.openProfileView(context, 'Padam Chopra');
+                },
               ),
             ],
           );

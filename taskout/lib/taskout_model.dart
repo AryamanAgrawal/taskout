@@ -5,6 +5,8 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:taskout/pages/profile.dart';
+import 'package:taskout/pages/secondary/profiletaskview.dart';
 import './models/task.dart';
 
 class TaskoutModel extends Model {
@@ -265,4 +267,40 @@ class TaskoutModel extends Model {
     }
   }
   //STOPS: Save new task
+
+  //STARTS: Opening Profile Page
+  List<CustomTask> outsourcedTaskUserList = [];
+  List<CustomTask> receivedTaskUserList = [];
+
+  void openProfileView(BuildContext context, String profileName) {
+    for (CustomTask task in outsourcedTasks) {
+      if (task.taskData['to'] == username) {
+        outsourcedTaskUserList.add(task);
+      }
+      if (task.taskData['from'] == username) {
+        receivedTaskUserList.add(task);
+      }
+    }
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (BuildContext context) {
+          return ProfileView(
+            outsourcedTasksNum: outsourcedTaskUserList.length,
+            receivedTasksNum: receivedTaskUserList.length,
+            profileName: profileName,
+          );
+        },
+      ),
+    );
+  }
+
+  void openProfileTaskView(BuildContext context, String mode) {
+     Navigator.push(context,
+                MaterialPageRoute(builder: (BuildContext context) {
+              return ProfileTaskView(
+                mode: mode,
+              );
+            }));
+  }
 }
